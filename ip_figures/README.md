@@ -1,6 +1,6 @@
 ## A Toy Example of IP Agents Rating System
-The framework is based on Google Deepmind's [Concordia](https://github.com/google-deepmind/concordia), which is a pipeline for configuring an environment and interactive agents within it, based on LLMs.  
-For our system, we additionally collect the generated data of scenarios and agents' responses, let human users rate the agents' responses, and use the ratings to train the agents' models.
+The framework is based on Google Deepmind's [Concordia](https://github.com/google-deepmind/concordia), which is a pipeline for configuring an environment and interactive agents within it, based on LLMs. Under this framework, all kinds of scenarios are theoretically possible. It is also possible to introduce human interactors and real-world information into the system.
+For our system, we additionally collect the generated data of scenarios and agents' responses, let human users rate the agents' responses, and use the ratings to train the agents' models.  
 
 ### Installation
 1.  Clone value_:
