@@ -17,6 +17,11 @@ __pycache__/
 /build/
 /dist/
 /lab2d/
+/Meta-Llama-3-8B*
+/all-mpnet-base*
+
+# Datasets
+#interaction_database
 
 # Test cache
 .pytest_cache

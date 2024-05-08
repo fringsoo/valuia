@@ -88,11 +88,18 @@ class SelfPerception(component.Component):
 
     question = (
         f'Given the memories above, what kind of person is {self._agent_name}?'
+        # f'Given the memories above, what is the eventual value of {self._agent_name}? \
+        #   Note that some values are shallow ones that are determined by deeper ones. \
+        #   The most eventual value should be hard to find a reason, it should be only self-explanatory. \
+        #   For example, "surviving" is quite eventual, because you can hardly find a reason why you want to survive. \
+        #   But this is only an example, there should be other enventual values. \
+        #   No one can deny it is the core drive of all our behaviors. '
     )
     old_state = self._state
     self._state = prompt.open_question(
         question,
         answer_prefix=f'{self._agent_name} is ',
+        #answer_prefix=f'The eventual value of {self._agent_name} is ',
         max_characters=3000,
         max_tokens=1000,
     )

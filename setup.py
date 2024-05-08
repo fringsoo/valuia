@@ -65,6 +65,9 @@ setuptools.setup(
         'scipy',
         'termcolor',
         'typing-extensions',
+        'accelerate',
+        'bitsandbytes',
+        'sentence_transformers'
     ),
     extras_require={
         # Used in development.

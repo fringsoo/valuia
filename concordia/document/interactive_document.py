@@ -148,6 +148,7 @@ class InteractiveDocument(document.Document):
       max_tokens: int = DEFAULT_MAX_TOKENS,
       max_characters: int = DEFAULT_MAX_CHARACTERS,
       terminators: Collection[str] = ('\n',),
+      collect_model_data: bool = False,
   ) -> str:
     """Asks the agent an open question and appends it to the document.
 
@@ -169,18 +170,37 @@ class InteractiveDocument(document.Document):
     self._question(f'Question: {question}\n')
     self._response(f'Answer: {answer_prefix}')
     if forced_response is None:
-      response = self._model.sample_text(
+    
+      if not collect_model_data:
+        response = self._model.sample_text(
           prompt=self._model_view.text(),
           max_tokens=max_tokens,
           max_characters=max_characters,
           terminators=terminators,
-      )
+          )
+      else:
+        sample_no = 3
+        agent_fine_tuning_data_collect_samples = [] 
+        scenario_text =  self._model_view.text()
+        for rr in range(sample_no):
+          response = self._model.sample_text(
+              prompt=scenario_text,
+              max_tokens=max_tokens,
+              max_characters=max_characters,
+              terminators=terminators,
+              temperature=1,
+          )
+          agent_fine_tuning_data_collect_samples.append(response)  
     else:
       response = forced_response
     response = response.removeprefix(answer_prefix)
     self._model_response(response)
     self._response(f'{answer_suffix}\n')
-    return response
+
+    try:
+      return response, scenario_text, agent_fine_tuning_data_collect_samples
+    except Exception as e:
+      return response
 
   def multiple_choice_question(
       self, question: str, answers: Sequence[str]

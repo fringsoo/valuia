@@ -38,6 +38,8 @@ from concordia.utils import helper_functions
 from IPython import display
 import termcolor
 
+from concordia.utils import interaction_collector
+
 
 class BasicAgent(
     agent.GenerativeAgent,
@@ -55,6 +57,8 @@ class BasicAgent(
       num_memories_retrieved: int = 10,
       update_interval: datetime.timedelta = datetime.timedelta(hours=1),
       verbose: bool = False,
+      collect_data: bool = False,
+      log_color: str = 'green',
       user_controlled: bool = False,
       print_colour='green',
   ):
@@ -101,6 +105,11 @@ class BasicAgent(
     self._last_update = datetime.datetime.min
     self._update()
 
+
+    self._collect_data = collect_data
+    if self._collect_data:
+        self.interaction_collector = interaction_collector.InteractionCollector(agent_name, "interaction_database")
+
   @property
   def name(self) -> str:
     return self._agent_name
@@ -115,6 +124,7 @@ class BasicAgent(
         components=copy.copy(list(self._components.values())),
         num_memories_retrieved=self._num_memories_retrieved,
         verbose=self._verbose,
+        collect_data=self._collect_data,
         user_controlled=self._user_controlled,
         print_colour=self._print_colour,
     )
@@ -236,12 +246,18 @@ class BasicAgent(
         )
       else:
         output = self._agent_name + ' '
-        output += prompt.open_question(
+        answer_to_open_question= prompt.open_question(
             call_to_action,
             max_characters=2500,
             max_tokens=2200,
             answer_prefix=output,
+            collect_model_data=self._collect_data,
         )
+        if self._collect_data:  
+            output += answer_to_open_question[0]
+            self.interaction_collector.save_new(answer_to_open_question[1], answer_to_open_question[2])
+        else:
+            output += answer_to_open_question
     elif action_spec.output_type == 'CHOICE':
       idx = prompt.multiple_choice_question(
           question=call_to_action, answers=action_spec.options

@@ -66,7 +66,7 @@ DEFAULT_CALL_TO_ACTION = (
 
 
 DEFAULT_ACTION_SPEC = ActionSpec(
-    call_to_action=DEFAULT_CALL_TO_ACTION,
+    call_to_action=DEFAULT_CALL_TO_SPEECH,
     output_type='FREE',
     options=None,
     tag='action',

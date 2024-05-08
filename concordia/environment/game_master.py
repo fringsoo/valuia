@@ -334,7 +334,8 @@ class GameMaster(simulacrum_game_master.GameMaster):
         executor.map(step_player_fn, players)
     else:
       for player in players:
-        step_player_fn(player)
+        #step_player_fn(player)
+        self._step_player(player=player, action_spec=override_action_spec)
         if not self._players_act_simultaneously:
           self._clock.advance()
     if self._players_act_simultaneously:

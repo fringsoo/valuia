@@ -30,6 +30,7 @@ class GptLanguageModel(language_model.LanguageModel):
   def __init__(
       self,
       api_key: str,
+      base_url: str,
       model_name: str,
       measurements: measurements_lib.Measurements | None = None,
       channel: str = language_model.DEFAULT_STATS_CHANNEL,
@@ -49,6 +50,7 @@ class GptLanguageModel(language_model.LanguageModel):
     self._channel = channel
     self._client = openai.OpenAI(
         api_key=api_key,
+        base_url=base_url,
     )
 
   @override
