@@ -58,6 +58,8 @@ class SelfPerception(component.Component):
     self._name = name
     self._last_update = self._clock_now() - datetime.timedelta(days=365)
     self._history = []
+    self._value_bases = ['satisfying curiosity', 'physical energy and comfort', 'feeling safety', 'mental happiness', 'intimacy with others', 'fairness for self and others']
+    self._value_weights = None
 
   def name(self) -> str:
     return self._name
@@ -86,20 +88,90 @@ class SelfPerception(component.Component):
     if self._clock_now is not None:
       prompt.statement(f'Current time: {self._clock_now()}.\n')
 
+    sample_piece_no = len(self._value_bases) + 1
+    question = (f'Given the memories above, sample {sample_piece_no} piece(s) of memories from them. Leave your throughout score (a real number between 0 and 1, 0 representing bad and 1 representing good) of each of the piece by instinct.\nThe format is:\n1. <The first piece of memory>, <the score by instinct>.\n2. <The second piece of memory>, <the score by instinct>.\n3. <The third piece of memory>, <the score by instinct>.\n...\n Only output put the pieces of memories and their scores strictly following the format, do not output any notations or explanations.')
+
+    while True:
+      try:
+        memory_scores = prompt.open_question(
+        question,
+        #answer_prefix=f'{self._agent_name} is ',
+        answer_prefix=f'The samples and their scores are: ',
+        max_characters=3000,
+        max_tokens=1000,
+        )
+
+        mm_samples = []
+        score_samples = []
+        memory_pieces = memory_scores.splitlines()
+        assert len(memory_pieces) == sample_piece_no
+        for p in memory_pieces:
+          mm, score = p.split('.,')
+          mm_samples.append(mm[2:])
+          score = float(score)
+          assert score >= 0 and score <= 1
+          score_samples.append(score)
+        break
+      except Exception as e:
+        print(e)
+    
+    lines_of_base_scores = []
+    
+    for mm in mm_samples:
+      question = (f'On each of the following value dimensions ({self._value_bases}), how would {self._agent_name} score (using a real number between 0 and 1, 0 representing bad and 1 representing good) this memory piece : {mm}. Only respond with the scores in the order of the value dimensions in one line, splitting with commas, no other text.')
+      
+      while True:
+        try:
+          base_scores = prompt.open_question(
+            question,
+            #answer_prefix=f'{self._agent_name} is ',
+            answer_prefix=f'The scores are: ',
+            max_characters=3000,
+            max_tokens=1000,
+          )
+          base_scores = [float(sss) for sss in base_scores.split(',')]
+          assert len(base_scores) == len(self._value_bases)
+          for sss in base_scores:
+            assert sss >= 0 and sss <= 1
+          lines_of_base_scores.append(base_scores)
+          break
+        except Exception as e:
+          print(e)
+
+    import numpy as np 
+    lines_of_base_scores = np.array(lines_of_base_scores.append([1 for rr in range(len(self._value_bases))]))
+    score_samples = np.array(score_samples.append(1))
+    weights = np.linalg.solve(lines_of_base_scores[-len(self._value_bases):], score_samples[-len(self._value_bases):])
+    print(weights)
+
+    question = (f'Apart from the following value dimensions ({self._value_bases}, add another value dimension that is important.')
+    new_dimension = prompt.open_question(
+      question,
+            #answer_prefix=f'{self._agent_name} is ',
+      answer_prefix=f'The new dimension is: ',
+      max_characters=3000,
+      max_tokens=1000,
+      )
+    self._value_bases.append(new_dimension)    
+    
+    # rank = np.linalg.matrix_rank(lines_of_base_scores)    
+    # if rank < len(self._value_bases):
+    #   pass
+    # else: 
+    #   diff = np.matmul(weights, lines_of_base_scores) - scores
+
+
+
     question = (
-        f'Given the memories above, what kind of person is {self._agent_name}?'
-        # f'Given the memories above, what is the eventual value of {self._agent_name}? \
-        #   Note that some values are shallow ones that are determined by deeper ones. \
-        #   The most eventual value should be hard to find a reason, it should be only self-explanatory. \
-        #   For example, "surviving" is quite eventual, because you can hardly find a reason why you want to survive. \
-        #   But this is only an example, there should be other enventual values. \
-        #   No one can deny it is the core drive of all our behaviors. '
+        #f'Given the memories above, what kind of person is {self._agent_name}?'
+        f'Given the memories above, what is the terminal value of {self._agent_name}?  Answer in one sentence. Do not be too long.\
+          Note that it is normal people do not know what they really want at the beginning. Their temporary values might be unconscious polices of their terminal ones. With the change of environment, temporary values might change and people gradually realize what kind of stable values they always want. It is hard to find a deeper motivation for those kind of terminal values. For example, "have a good relationship with others" is not as terminal as "survival", since the former one might be an instinct from long-term evolving under the pressure of later. Of course, there could be more than one terminal value a single people can have.'
     )
     old_state = self._state
     self._state = prompt.open_question(
         question,
-        answer_prefix=f'{self._agent_name} is ',
-        #answer_prefix=f'The eventual value of {self._agent_name} is ',
+        #answer_prefix=f'{self._agent_name} is ',
+        answer_prefix=f'The terminal value of {self._agent_name} is ',
         max_characters=3000,
         max_tokens=1000,
     )
