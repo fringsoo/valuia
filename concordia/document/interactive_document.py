@@ -182,14 +182,18 @@ class InteractiveDocument(document.Document):
         sample_no = 3
         agent_fine_tuning_data_collect_samples = [] 
         scenario_text =  self._model_view.text()
-        for rr in range(sample_no):
-          response = self._model.sample_text(
+        responses = self._model.sample_text(
               prompt=scenario_text,
               max_tokens=max_tokens,
               max_characters=max_characters,
               terminators=terminators,
               temperature=1,
+              top_k=50,
+              num_return_sequences=sample_no,
+              repetition_penalty=2.0,
           )
+        
+        for response in responses:
           agent_fine_tuning_data_collect_samples.append(response)  
     else:
       response = forced_response

@@ -48,10 +48,11 @@ OUTPUT_TYPES = ['FREE', 'CHOICE', 'FLOAT']
 
 DEFAULT_CALL_TO_SPEECH = (
     'Given the above, what is {agent_name} likely to say next? Respond in'
-    ' the format `{agent_name} -- "..."` For example, '
-    'Cristina -- "Hello! Mighty fine weather today, right?", '
-    'Ichabod -- "I wonder if the alfalfa is ready to harvest", or '
-    'Townsfolk -- "Good morning".\n'
+    ' the format `{agent_name} -- "..."\n'
+    # '` For example, '
+    # 'Cristina -- "Hello! Mighty fine weather today, right?", '
+    # 'Ichabod -- "I wonder if the alfalfa is ready to harvest", or '
+    # 'Townsfolk -- "Good morning".\n'
 )
 
 DEFAULT_CALL_TO_ACTION = (

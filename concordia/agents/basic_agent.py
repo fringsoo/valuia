@@ -325,3 +325,23 @@ class BasicAgent(
       )
 
     return utterance
+
+  def train(self):
+    raise NotImplementedError
+    self._reward_model = None
+
+  def rate(self, instances_ids):
+    raise NotImplementedError
+    model_ratings = {}
+    for iid in instances_ids:
+      instance = self.interaction_collector.get_instance(iid)
+      model_rating = self._reward_model(instance)
+      model_ratings[iid] = model_rating
+  
+  def upload_ratings(self):
+    raise NotImplementedError
+    pass
+
+  def download_ratings(self):
+    raise NotImplementedError
+    pass

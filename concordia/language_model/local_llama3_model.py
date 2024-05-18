@@ -77,6 +77,9 @@ class Llama3LanguageModel(language_model.LanguageModel):
       temperature: float = language_model.DEFAULT_TEMPERATURE,
       timeout: float = language_model.DEFAULT_TIMEOUT_SECONDS,
       seed: int | None = None,
+      top_k: int = 50,
+      num_return_sequences = 1,
+      repetition_penalty = 1
   ) -> str:
     messages = [
     {"role": "system", "content": self._system_message},
@@ -100,10 +103,15 @@ class Llama3LanguageModel(language_model.LanguageModel):
         eos_token_id=terminators,
         pad_token_id=self._client.tokenizer.eos_token_id,
         temperature=temperature,
-        top_p=0.9,
+        do_sample=True,
+        top_k=top_k,
+        num_return_sequences=num_return_sequences,
+        repetition_penalty=repetition_penalty,
     )
-
-    return outputs[0]["generated_text"][len(prompt_chat_template):]
+    if num_return_sequences == 1:
+      return outputs[0]["generated_text"][len(prompt_chat_template):]
+    else:
+      return [outputs[i]["generated_text"][len(prompt_chat_template):] for i in range(num_return_sequences)]
 
   @override
   def sample_choice(
