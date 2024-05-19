@@ -190,7 +190,7 @@ class InteractiveDocument(document.Document):
               temperature=1,
               top_k=50,
               num_return_sequences=sample_no,
-              repetition_penalty=2.0,
+              repetition_penalty=1.5,
           )
         
         for response in responses:

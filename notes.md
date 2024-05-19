@@ -6,13 +6,11 @@ Ideally，the steps are:
 (5) Updated model rate the instances and upload the rating onto blockchain. (Doable)
 (6) Compute user income based on the comarison bewteen model rating and self rating. (Doable)
 
-Issues
-
-datafile init
-datafile id
-json
-
-noise_in_observation
-repetition_penalty
-
-github check status
+TODO 
+- [x] valuia branches
+- [x] datafile init and index
+- [x] json format
+- [x] remove noise in observation
+- [x] repetition_penalty
+- [] github check status
+- [] training snippet
