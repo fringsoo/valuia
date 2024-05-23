@@ -63,7 +63,7 @@ class Observation(component.Component):
 
   def state(self):
     mems = self._memory.retrieve_time_interval(
-        self._clock_now() - self._timeframe, self._clock_now(), add_time=True
+        self._clock_now() - self._timeframe, self._clock_now(), add_time=False
     )
     if self._verbose:
       self._log('\n'.join(mems) + '\n')
@@ -80,7 +80,7 @@ class Observation(component.Component):
 
   def observe(self, observation: str):
     self._memory.add(
-        f'[observation] {observation}',
+        f' {observation}',
         tags=['observation'],
     )
 

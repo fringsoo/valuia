@@ -30,5 +30,14 @@ Try out ip_figure.ipynb
 The collected data is stored in the "interaction_database" folder in CSV format.  
 For each IP figure, we build a CSV file, with two columns, i.e. the scenarios and the responses. The same scenario may correspond to multiple responses.
 
+The dataset can also be visited via API:  
+Start the server:  
+```
+python server.py &
+```
+Read the data:  
+```
+http://localhost:5000/read?key=<Agent_Name>&index=<index>
+```
 ### Training
 TBD.

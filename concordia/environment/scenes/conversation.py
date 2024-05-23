@@ -142,7 +142,7 @@ def make_conversation_game_master(
       actors_str += ' with themself'
     convo += f'{actors_str}.\n'
 
-  convo += 'Here is the conversation from the beginning:'
+  #convo += 'Here is the conversation from the beginning:'
 
   conversation_tracker = ConversationTracker(
       model=model,

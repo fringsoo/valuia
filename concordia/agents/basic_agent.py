@@ -108,7 +108,7 @@ class BasicAgent(
 
     self._collect_data = collect_data
     if self._collect_data:
-        self.interaction_collector = interaction_collector.InteractionCollector(agent_name, "interaction_database")
+        self.interaction_collector = interaction_collector.InteractionCollector(agent_name.replace(' ','_'), "interaction_database")
 
   @property
   def name(self) -> str:
@@ -188,7 +188,7 @@ class BasicAgent(
       return '\n'.join(
           f"{self._agent_name}'s " + (comp.name() + ':\n' + comp.state() + '\n')
           for comp in self._components.values()
-          if comp.state()
+          if comp.state() and comp.name()!='Current time'
       )
 
   def _maybe_update(self):
@@ -249,13 +249,13 @@ class BasicAgent(
         answer_to_open_question= prompt.open_question(
             call_to_action,
             max_characters=2500,
-            max_tokens=2200,
+            max_tokens=500,
             answer_prefix=output,
             collect_model_data=self._collect_data,
         )
         if self._collect_data:  
             output += answer_to_open_question[0]
-            self.interaction_collector.save_new(answer_to_open_question[1], answer_to_open_question[2])
+            self.interaction_collector.save_new("".join(answer_to_open_question[1].split("\n")[:-3]), answer_to_open_question[2])
         else:
             output += answer_to_open_question
     elif action_spec.output_type == 'CHOICE':
