@@ -192,7 +192,7 @@ class FormativeMemoryFactory:
         'mention their age at the time the event occurred using language such '
         f'as "When {agent_config.name} was 5 years old, they experienced..." . '
         'Use past tense. Write no more than three sentences per episode. '
-        'Separate episodes from one another by the delimiter "\n\n\n". Do not '
+        'Separate episodes from one another by the delimiter "\n\n". Do not '
         'apply any other special formatting besides these delimiters.'
     )
     if agent_config.traits:
@@ -213,7 +213,7 @@ class FormativeMemoryFactory:
         terminators=[],
     )
 
-    episodes = aggregated_result.split('\n\n\n')
+    episodes = aggregated_result.split('\n\n')
 
     if len(episodes) != len(list(agent_config.formative_ages)):
       logger.warning(

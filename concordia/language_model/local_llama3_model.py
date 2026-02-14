@@ -54,6 +54,7 @@ class Llama3LanguageModel(language_model.LanguageModel):
     bnb_4bit_compute_dtype=torch.bfloat16
     )
     model = AutoModelForCausalLM.from_pretrained(model_name, quantization_config=bnb_config, device_map="auto", low_cpu_mem_usage=True) 
+    #model = AutoModelForCausalLM.from_pretrained('roneneldan/TinyStories-1M', quantization_config=bnb_config, device_map="auto", low_cpu_mem_usage=True) 
     #model = AutoModelForCausalLM.from_pretrained(model_name, load_in_4bit=True)
     model.resize_token_embeddings(len(tokenizer))
     self._client = pipeline("text-generation", model=model, tokenizer=tokenizer, 
@@ -115,9 +116,10 @@ class Llama3LanguageModel(language_model.LanguageModel):
   ) -> tuple[int, str, dict[str, float]]:
     max_characters = len(max(responses, key=len))
     #prompt_with_system_message = f"{self._system_message}\n\n{prompt}"
+    prompt_with_system_message = f"Answer the question by choosing one of the options. No more talk. {prompt}\n\n"
     sample = self.sample_text(
-        #prompt_with_system_message,
-        prompt + '\nJust choose one of the options. No more talk.',
+        prompt_with_system_message,
+        #prompt + '\nJust choose one of the options. No more talk.',
         max_characters=max_characters,
         temperature=0.1,
         seed=seed,

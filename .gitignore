@@ -19,6 +19,7 @@ __pycache__/
 /lab2d/
 /Meta-Llama-3-8B*
 /all-mpnet-base*
+/bert-base-
 
 # Datasets
 #interaction_database

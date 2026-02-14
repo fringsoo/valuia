@@ -7,9 +7,35 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "3.11.9"
+prompt-toolkit = "*"
+absl-py = "*"
+google-cloud-aiplatform = "*"
+ipython = "*"
+langchain = "*"
+matplotlib = "*"
+numpy = "*"
+openai = "^1.3.0"
+pandas = "<2.0.3"
+python-dateutil = "*"
+reactivex = "*"
+retry = "*"
+scipy = "*"
+termcolor = "*"
+typing-extensions = "*"
+accelerate = "*"
+bitsandbytes = "*"
+sentence_transformers = "*"
+langchain-community = "^0.2.1"
+causal-learn = "^0.1.3.8"
+faker = "^25.8.0"
 
 [tool.poetry.group.dev.dependencies]
 ipykernel = "^6.29.4"
+
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
 
 [build-system]
 requires = ["poetry-core"]
